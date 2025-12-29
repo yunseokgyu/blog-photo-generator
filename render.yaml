@@ -3,7 +3,7 @@ services:
     name: blog-photo-generator
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    startCommand: gunicorn app:app --timeout 120 --workers 1 --threads 8
     envVars:
       - key: PYTHON_VERSION
         value: 3.9.0

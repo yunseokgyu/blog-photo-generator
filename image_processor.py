@@ -37,6 +37,15 @@ def process_image(image_path, save_path):
 
         # 2. 랜덤 크롭 (상하좌우 미세하게 잘라내기 - 해시값 변경 핵심)
         w, h = img.size
+        
+        # 0. 메모리 최적화: 너무 큰 이미지는 미리 줄여놓고 시작
+        # 필터(Contrast 등)를 먹일 때 메모리가 2~3배 튀는 것을 방지
+        if w > TARGET_WIDTH * 2:
+            ratio = (TARGET_WIDTH * 1.5) / float(w)
+            h_size = int((float(h) * float(ratio)))
+            img = img.resize((int(TARGET_WIDTH * 1.5), h_size), Image.Resampling.LANCZOS)
+            w, h = img.size # 줄어든 크기로 업데이트
+
         # 이미지가 너무 작을 경우 크롭 범위 조절
         crop_margin = 10
         if w <= 20 or h <= 20: 
