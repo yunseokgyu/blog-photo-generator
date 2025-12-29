@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지 세탁소 (Image Laundry)</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🧺 이미지 세탁소 & 🔬 정밀 분석실</h1>
+            <p>블로그용 이미지 자동 가공 + 봇 시점 차이 분석</p>
+        </header>
+
+        <main>
+            <!-- Left Column: Image Laundry -->
+            <div class="section">
+                <h2>💧 이미지 세탁기</h2>
+                <div class="upload-area" id="drop-zone">
+                    <div class="icon">☁️</div>
+                    <p>이미지 드래그 & 드롭</p>
+                    <input type="file" id="file-input" multiple accept="image/*" hidden>
+                </div>
+                <div id="file-list" class="file-list"></div>
+
+                <div class="input-group">
+                    <label for="target-count">📊 생성 수량 (1~100)</label>
+                    <input type="number" id="target-count" min="1" max="100" value="10">
+                </div>
+
+                <div class="input-group">
+                    <label for="keywords">🏷️ 키워드 (쉼표 구분)</label>
+                    <input type="text" id="keywords" placeholder="예: 맛집, 여행" value="블로그, 정보">
+                </div>
+
+                <button id="process-btn" disabled>세탁 시작</button>
+
+                <div id="status-area" class="hidden">
+                    <div class="spinner"></div>
+                    <p id="status-text">세탁 중...</p>
+                </div>
+
+                <div id="result-area" class="hidden">
+                    <div class="success-icon">✨</div>
+                    <p>완료!</p>
+                    <a id="download-link" href="#" class="download-btn">📦 다운로드</a>
+                </div>
+            </div>
+
+            <!-- Right Column: Image Comparator -->
+            <div class="section">
+                <h2>🔬 비교 실험실</h2>
+                <p style="font-size:0.9rem; color:#666; margin-bottom:1rem;">원본(A)과 세탁본(B)을 비교해보세요.</p>
+
+                <div class="compare-grid">
+                    <div class="mini-drop" id="drop-a">
+                        📂 원본(A)<br>클릭/드롭
+                        <input type="file" id="input-a" accept="image/*" hidden>
+                    </div>
+                    <div class="mini-drop" id="drop-b">
+                        📂 세탁본(B)<br>클릭/드롭
+                        <input type="file" id="input-b" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <button id="compare-btn" style="background:#6c757d;">🔍 비교 분석 시작</button>
+
+                <div id="compare-result" class="hidden">
+                    <table class="result-table">
+                        <thead>
+                            <tr>
+                                <th>항목</th>
+                                <th>원본(A)</th>
+                                <th>세탁본(B)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>메타데이터</td>
+                                <td id="res-meta-a">-</td>
+                                <td id="res-meta-b">-</td>
+                            </tr>
+                            <tr>
+                                <td>파일크기</td>
+                                <td id="res-size-a">-</td>
+                                <td id="res-size-b">-</td>
+                            </tr>
+                            <tr>
+                                <td>해상도</td>
+                                <td id="res-dim-a">-</td>
+                                <td id="res-dim-b">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top:1rem;">
+                        <span style="font-weight:bold; font-size:0.9rem;">👁️ 봇이 보는 차이 (Color=변경됨)</span>
+                        <img id="diff-image" class="diff-preview" src="" alt="Difference Map">
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

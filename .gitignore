@@ -1,0 +1,9 @@
+venv/
+__pycache__/
+*.pyc
+uploads/
+clean_images/
+clean_images_web/
+processed_images.zip
+.DS_Store
+image_mapping_list.xlsx
