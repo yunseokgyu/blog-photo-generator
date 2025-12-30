@@ -4,6 +4,7 @@ import io
 import shutil
 import random
 import base64
+import gc
 from PIL import Image, ImageChops, ImageOps
 from flask import Flask, render_template, request, send_file, jsonify
 from image_processor import process_image, get_random_string
@@ -83,7 +84,11 @@ def upload_file():
                 '세탁된파일': new_filename,
                 '키워드': keyword,
                 '추천_ALT태그': f"{keyword} 관련 이미지 자료"
+                '추천_ALT태그': f"{keyword} 관련 이미지 자료"
             })
+        
+        # Explicit garbage collection after each image
+        gc.collect()
 
     if processed_count == 0:
          return jsonify({'error': 'No files processed'}), 400
@@ -93,22 +98,14 @@ def upload_file():
     excel_path = os.path.join(CLEAN_FOLDER, 'image_mapping_list.xlsx')
     df.to_excel(excel_path, index=False)
 
-    # Create Zip
-    memory_file = io.BytesIO()
-    with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zf:
+    # Create Zip directly on disk (No Memory Buffer)
+    zip_path = os.path.join(CLEAN_FOLDER, 'processed_images.zip')
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
         for root, dirs, files in os.walk(CLEAN_FOLDER):
             for file in files:
-                zf.write(os.path.join(root, file), file)
-    
-    memory_file.seek(0)
-    
-    # We save the zip to send it via a separate route or return it? 
-    # Returning straight away is easier for single request. 
-    # But AJAX expects JSON usually to handle success/fail UI.
-    # Let's save zip to a temp file and return a download link.
-    zip_path = os.path.join(CLEAN_FOLDER, 'processed_images.zip')
-    with open(zip_path, 'wb') as f:
-        f.write(memory_file.getvalue())
+                # Avoid zipping the zip itself if it exists (though we cleared folder)
+                if file != 'processed_images.zip':
+                    zf.write(os.path.join(root, file), file)
 
     return jsonify({'message': 'Success', 'count': processed_count, 'download_url': '/download/processed_images.zip'})
 
