@@ -33,8 +33,8 @@ def process_image(image_path, save_path):
         
         # 0. 극약처방: 로드 직후 즉시 리사이징 (메모리 폭발 방지)
         # 원본이 1500px보다 크다면, 아예 처음부터 줄여버림
-        # thumbnail은 원본 비율 유지하며 지정된 크기 안에 맞춤
-        img.thumbnail((1500, 1500), Image.Resampling.LANCZOS)
+        # LANCZOS 대신 BOX(또는 BILINEAR)를 써야 메모리 피크를 막음
+        img.thumbnail((1500, 1500), Image.Resampling.BOX)
         
         # 1. RGBA(투명배경)인 경우 RGB로 변환 (JPG 저장을 위해)
         if img.mode in ('RGBA', 'P'):
