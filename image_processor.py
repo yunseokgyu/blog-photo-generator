@@ -69,7 +69,7 @@ def process_image(image_path, save_path):
         if img.size[0] > 0:
             ratio = TARGET_WIDTH / float(img.size[0])
             h_size = int((float(img.size[1]) * float(ratio)))
-            img = img.resize((TARGET_WIDTH, h_size), Image.Resampling.LANCZOS)
+            img = img.resize((TARGET_WIDTH, h_size), Image.Resampling.BOX)
 
         # 5. 저장 (메타데이터는 이 과정에서 자연스럽게 사라짐)
         img.save(save_path, quality=95)
