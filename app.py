@@ -86,8 +86,9 @@ def upload_file():
                 '추천_ALT태그': f"{keyword} 관련 이미지 자료"
             })
         
-        # Explicit garbage collection after each image
-        gc.collect()
+        # Optimize GC: Run every 10 images instead of every 1
+        if i % 10 == 0:
+            gc.collect()
 
     if processed_count == 0:
          return jsonify({'error': 'No files processed'}), 400
