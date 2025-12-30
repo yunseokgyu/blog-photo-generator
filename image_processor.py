@@ -31,24 +31,21 @@ def process_image(image_path, save_path):
     try:
         img = Image.open(image_path)
         
+        # 0. 극약처방: 로드 직후 즉시 리사이징 (메모리 폭발 방지)
+        # 원본이 1500px보다 크다면, 아예 처음부터 줄여버림
+        # thumbnail은 원본 비율 유지하며 지정된 크기 안에 맞춤
+        img.thumbnail((1500, 1500), Image.Resampling.LANCZOS)
+        
         # 1. RGBA(투명배경)인 경우 RGB로 변환 (JPG 저장을 위해)
         if img.mode in ('RGBA', 'P'):
             img = img.convert('RGB')
 
-        # 2. 랜덤 크롭 (상하좌우 미세하게 잘라내기 - 해시값 변경 핵심)
+        # 2. 랜덤 크롭 (상하좌우 미세하게 잘라내기)
         w, h = img.size
         
-        # 0. 메모리 최적화: 너무 큰 이미지는 미리 줄여놓고 시작
-        # 필터(Contrast 등)를 먹일 때 메모리가 2~3배 튀는 것을 방지
-        if w > TARGET_WIDTH * 2:
-            ratio = (TARGET_WIDTH * 1.5) / float(w)
-            h_size = int((float(h) * float(ratio)))
-            img = img.resize((int(TARGET_WIDTH * 1.5), h_size), Image.Resampling.LANCZOS)
-            w, h = img.size # 줄어든 크기로 업데이트
-
         # 이미지가 너무 작을 경우 크롭 범위 조절
         crop_margin = 10
-        if w <= 20 or h <= 20: 
+        if w <= 50 or h <= 50: 
             crop_margin = 0
             
         left = random.randint(0, crop_margin)
