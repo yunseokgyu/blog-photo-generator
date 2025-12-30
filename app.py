@@ -84,7 +84,6 @@ def upload_file():
                 '세탁된파일': new_filename,
                 '키워드': keyword,
                 '추천_ALT태그': f"{keyword} 관련 이미지 자료"
-                '추천_ALT태그': f"{keyword} 관련 이미지 자료"
             })
         
         # Explicit garbage collection after each image
